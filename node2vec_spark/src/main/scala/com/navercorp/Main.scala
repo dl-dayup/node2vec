@@ -75,7 +75,7 @@ object Main {
     opt[Int]("numPartition")
       .required()
       .text("numPartition value: null")
-      .action((x, c) => c.copy(numPartition = x))
+      .action((x, c) => c.copy(numPartition  = x))
     opt[String]("cmd")
             .required()
             .text(s"command: ${defaultParams.cmd.toString}")
