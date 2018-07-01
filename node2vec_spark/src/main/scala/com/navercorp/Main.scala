@@ -101,25 +101,26 @@ object Main {
     parser.parse(args, defaultParams).map { param =>
       val conf = new SparkConf().setAppName("Node2Vec")
       val context: SparkContext = new SparkContext(conf)
+      val randomPaths = Word2vec.setup(context, param).read(param.input)
+      Word2vec.fit(randomPaths).save(param.output)
+//      Node2vec.setup(context, param)
       
-      Node2vec.setup(context, param)
-      
-      param.cmd match {
-        case Command.node2vec => Node2vec.load()
-                                         .initTransitionProb()
-                                         .randomWalk()
-                                         .embedding()
-                                         .save()
-        case Command.randomwalk => Node2vec.load()
-                                           .initTransitionProb()
-                                           .randomWalk()
-                                           .saveRandomPath()
-        case Command.embedding => {
-          val randomPaths = Word2vec.setup(context, param).read(param.input)
-          Word2vec.fit(randomPaths).save(param.output)
-          Node2vec.loadNode2Id(param.nodePath).saveVectors()
-        }
-      }
+//      param.cmd match {
+//        case Command.node2vec => Node2vec.load()
+//                                         .initTransitionProb()
+//                                         .randomWalk()
+//                                         .embedding()
+//                                         .save()
+//        case Command.randomwalk => Node2vec.load()
+//                                           .initTransitionProb()
+//                                           .randomWalk()
+//                                           .saveRandomPath()
+//        case Command.embedding => {
+//          val randomPaths = Word2vec.setup(context, param).read(param.input)
+//          Word2vec.fit(randomPaths).save(param.output)
+//          Node2vec.loadNode2Id(param.nodePath).saveVectors()
+//        }
+//      }
     } getOrElse {
       sys.exit(1)
     }

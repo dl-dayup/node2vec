@@ -40,22 +40,22 @@ object Node2vec extends Serializable {
       case false => indexingGraph(config.input)
     }
     
-    indexedNodes = inputTriplets.flatMap { case (srcId, dstId, weight) =>
-      bcEdgeCreator.value.apply(srcId, dstId, weight)
-    }.reduceByKey(_++_).map { case (nodeId, neighbors: Array[(VertexId, Double)]) =>
-      var neighbors_ = neighbors
-      if (neighbors_.length > bcMaxDegree.value) {
-        neighbors_ = neighbors.sortWith{ case (left, right) => left._2 > right._2 }.slice(0, bcMaxDegree.value)
-      }
-        
-      (nodeId, NodeAttr(neighbors = neighbors_.distinct))
-    }.repartition(200).cache
-    
-    indexedEdges = indexedNodes.flatMap { case (srcId, clickNode) =>
-      clickNode.neighbors.map { case (dstId, weight) =>
-          Edge(srcId, dstId, EdgeAttr())
-      }
-    }.repartition(200).cache
+//    indexedNodes = inputTriplets.flatMap { case (srcId, dstId, weight) =>
+//      bcEdgeCreator.value.apply(srcId, dstId, weight)
+//    }.reduceByKey(_++_).map { case (nodeId, neighbors: Array[(VertexId, Double)]) =>
+//      var neighbors_ = neighbors
+//      if (neighbors_.length > bcMaxDegree.value) {
+//        neighbors_ = neighbors.sortWith{ case (left, right) => left._2 > right._2 }.slice(0, bcMaxDegree.value)
+//      }
+//
+//      (nodeId, NodeAttr(neighbors = neighbors_.distinct))
+//    }.repartition(200).cache
+//
+//    indexedEdges = indexedNodes.flatMap { case (srcId, clickNode) =>
+//      clickNode.neighbors.map { case (dstId, weight) =>
+//          Edge(srcId, dstId, EdgeAttr())
+//      }
+//    }.repartition(200).cache
     
     this
   }
